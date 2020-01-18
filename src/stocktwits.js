@@ -9,7 +9,7 @@ const userSeed = [
     'Michael_Hunt'
 ]
 
-const STKTWTS_API_ACCESS_TOKEN= 'https://api.stocktwits.com/api/2/'
+const STKTWTS_API_ACCESS_TOKEN= '1fe2f9e9b8b0e2dfc94bcb8fdcf3479f24d9474a'
 
 let messageJSON
 export const stk = {
