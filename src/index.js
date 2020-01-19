@@ -1,7 +1,11 @@
-import * as $ from './exports'
-import { app } from './app'
 import { stk } from './stocktwits'
+import { alp } from './alpaca'
 
-stk.init()
+// stk.init()
+alp.init()
+
+// setInterval(() => {
+//     stk.getMessages()
+// }, 60000)
 
 

@@ -1,105 +1,117 @@
-import {https} from 'https'
 import axios from 'axios'
+import _ from 'lodash'
 import {db} from './exports'
+import {alerts} from './lib/alerts'
 
 const STKTWTS_API_BASE_URL= 'https://api.stocktwits.com/api/2/'
-
-const userSeed = [
-    'mrinvestorpro',
-    'Michael_Hunt'
-]
-
 const STKTWTS_API_ACCESS_TOKEN= '1fe2f9e9b8b0e2dfc94bcb8fdcf3479f24d9474a'
 
-let messageJSON
+const stkAPI = axios.create({
+    baseURL: STKTWTS_API_BASE_URL
+})
+
+let following = db.get('following')
+
+
 export const stk = {
-    init() {
-        let self = this
-        let count = db.get('following').value().length
-        if(!count)
-        {
-            for(let usr in userSeed)
-            {
-                console.log(self.seedUsers(usr))
-                    // .then(val => {
-                    //     console.log(val)
-                    // })
-            }
-        }
-    },
-    async seedUsers(usr) {
+    async init() {
         
+        
+        // await this.getFollowing()
+        await this.seedUser() // This is here until better message searching can be achieved
+        this.getMessages()
+        following.write();
+        
+    },
+    async seedUser() { // This is here until better message searching can be achieved
+
         try {
-            const response = await axios.get(STKTWTS_API_BASE_URL + 'search/users.json?q=' + usr)
-            const data = response.data.results
-            if(data)
+            const response = await stkAPI.get('streams/user/' + 1702156 + '.json')
+            const user = response.data.user
+            
+            if(!following.find({id: user.id}).value())
             {
-                if(data.length > 1)
-                {
-                    console.log(data)
-                } else {
-                    return data.id
-                }
+                following.push(
+                    {
+                        id: user.id,
+                        name: user.username,
+                        messages: [],
+                        latestMsgId: 0
+                    }
+                ).write()
             }
         } catch (error) {
             console.log(error)
         }
-        // return https.get($.STKTWTS_API_BASE_URL + 'search/users.json?q=' + usr, (resp) => {
-        //     let data = ''
-        
-        //     // A chunk of data has been recieved.
-        //     resp.on('data', (chunk) => {
-        //     data += chunk
-        //     });
-        
-        //     // The whole response has been received. Print out the result.
-        //     resp.on('end', () => {
-                
-        //     return JSON.parse(data).messages
-        //     });
-        
-        // }).on("error", (err) => {
-        //     console.log("Error: " + err.message)
-        // });
     },
-    user_messages() {
-        return https.get($.STKTWTS_API_BASE_URL + 'streams/user/1702156.json', (resp) => {
-            let data = ''
-        
-            // A chunk of data has been recieved.
-            resp.on('data', (chunk) => {
-            data += chunk
-            });
-        
-            // The whole response has been received. Print out the result.
-            resp.on('end', () => {
-                
-            messageJSON = JSON.parse(data).messages
-            });
-        
-        }).on("error", (err) => {
-            console.log("Error: " + err.message)
-        });
-    },
-    prune() {
-        let user = $.db.get('users').find({ id: 1702156 })
-        let messages = user.get('messages')
-    
-        let buyAlert = /^\$[A-Z]{2,4}( ([B,b]uying|[A,a]dding|[O,o]pening)|(.* ([B,b]uying here|[A,a]dding here|[O,o]pening here)))/g
-    
-        for(let i in feed)
-        {
-            if(feed[i].body.match(buyAlert) && feed[i].symbols && user.get('messages').find({id: feed[i].id}).value() == undefined)
-            {
-                
-                user.get('messages').push(
-                    {
-                        id: feed[i].id,
-                        body: feed[i].body,
-                        symbol: feed[i].symbols[0].symbol,
-                        created: feed[i].created_at
+    async getFollowing() {
+        let response = null;
+        try {
+            response = await stkAPI.get(
+                'graph/following.json',
+                {
+                    params: {
+                        access_token: STKTWTS_API_ACCESS_TOKEN
                     }
-                ).write()
+                })
+        } catch (error) {
+            console.log(error)
+        }
+
+        let followedUsers = response.data.users
+        for(let i in followedUsers)
+        {
+            if(!following.find({id: followedUsers[i].id}).value())
+            {
+                following.push(
+                    {
+                        id: followedUsers[i].id,
+                        name: followedUsers[i].username,
+                        messages: []
+                    }).write()
+            }
+        }
+    },
+    async getMessages(){
+        
+        const users = following.value()
+        let response = null
+        for(let i in users)
+        {
+            try {
+                const msgParams = users[i].messages.length ? 
+                    { since: users[i].latestMsgId } : 
+                    {}
+                response = await stkAPI.get('streams/user/' + users[i].id + '.json',
+                    {
+                        params: msgParams
+                    })
+                this.pruneMessages(users[i].id, response.data.messages)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    },
+    pruneMessages(userID, msgs) {
+        const user = following.find({id: userID})
+        const alertIndex = _.findIndex(alerts, {id: userID})
+        const buyAlert = alertIndex >= 0 ? alerts[alertIndex].alert : alerts[0].alert
+        for(let i in msgs)
+        {
+            if(
+                msgs[i].body.match(buyAlert) 
+                && msgs[i].symbols 
+                && user.get('messages').find({id: msgs[i].id}).value() == undefined
+            )
+            {
+                following.find({id: userID})
+                    .get('messages')
+                    .push({
+                        id: msgs[i].id,
+                        body: msgs[i].body,
+                        symbols: msgs[i].symbols,
+                        created: msgs[i].created_at
+                    }).write()
             }
         }
     }

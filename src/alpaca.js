@@ -1,4 +1,6 @@
-import * as $ from './exports'
+import axios from 'axios'
+import _ from 'lodash'
+import {db} from './exports'
 
 const Alpaca = require('@alpacahq/alpaca-trade-api')
 
@@ -13,4 +15,26 @@ let alpaca = new Alpaca({
     paper: PAPER
   })
 
- 
+let following = db.get('following')
+
+const maxDollarBuy = 100
+
+ export const alp = {
+   openOrders: null,
+   async init() {
+     this.openOrders = await alpaca.getOrders({status: 'open'})
+     console.log(this.openOrders)
+   },
+   async newOrder(tkr) {
+     if(!await alpaca.getPosition(tkr))
+     {
+
+       alpaca.createOrder({
+         symbol: tkr,
+         qty: null,
+         side: 'buy',
+         type: 'market'
+       })
+     }
+   }
+ }
