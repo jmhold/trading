@@ -1,19 +1,10 @@
-import axios from 'axios'
 import _ from 'lodash'
-import {db} from './exports'
+import {
+  db,
+  alpaca
+} from './exports'
 
-const Alpaca = require('@alpacahq/alpaca-trade-api')
-
-const APCA_API_BASE_URL= 'https://paper-api.alpaca.markets'
-const API_KEY = 'PKOJ3SKL2S0C8U13OXUH'
-const API_SECRET = 'HWpjGn5fsfisnNCeZbl3Q/ycFO7oDce7MLW1akjG'
-const PAPER = true
-
-let alpaca = new Alpaca({
-    keyId: API_KEY, 
-    secretKey: API_SECRET, 
-    paper: PAPER
-  })
+let websocket = alpaca.websocket
 
 let following = db.get('following')
 
@@ -25,16 +16,44 @@ const maxDollarBuy = 100
      this.openOrders = await alpaca.getOrders({status: 'open'})
      console.log(this.openOrders)
    },
-   async newOrder(tkr) {
-     if(!await alpaca.getPosition(tkr))
-     {
-
-       alpaca.createOrder({
-         symbol: tkr,
-         qty: null,
-         side: 'buy',
-         type: 'market'
-       })
-     }
+   async newOrder(sym) {
+    if(await alpaca.getAccount().cash < maxDollarBuy) return
+    const self = this
+    const channel = 'T.' + sym
+    websocket.connect()
+    websocket.subscribe(channel)
+    websocket.onStockTrades(async data => {
+      const qty = Math.floor(maxDollarBuy/data.p, 0)
+      await alpaca.createOrder({
+           symbol: sym,
+           qty,
+           side: 'buy',
+           type: 'market',
+           time_in_force: 'ioc'
+         }) // TODO: for extended hours must be limit order with TIF 'day'
+      self.closeSubscription(channel)
+    })
+   },
+   async newMsgs(userID, since) {
+    const user = following.find({id: userID})
+    const msgs = user.get('messages').find((o) => o.id > since).value()
+    const postitions = await alpaca.getPositions()
+    
+    if(postitions.legth){
+      for(let i in msgs)
+      {
+        const sym = msgs[i].symbols
+        for(let j in sym)
+        {
+          if(!(_.findIndex(postitions, {symbol: sym}) > 0))
+          {
+            this.newOrder(sym)
+          }
+        }
+      }
+    }
+   },
+   closeSubscription(channel) {
+     websocket.unsubscribe(channel)
    }
  }

@@ -1,22 +1,18 @@
-import axios from 'axios'
 import _ from 'lodash'
-import {db} from './exports'
+import {
+    db,
+    stkAPI,
+    STKTWTS_API_ACCESS_TOKEN
+} from './exports'
+import {alp} from './alpaca'
 import {alerts} from './lib/alerts'
-
-const STKTWTS_API_BASE_URL= 'https://api.stocktwits.com/api/2/'
-const STKTWTS_API_ACCESS_TOKEN= '1fe2f9e9b8b0e2dfc94bcb8fdcf3479f24d9474a'
-
-const stkAPI = axios.create({
-    baseURL: STKTWTS_API_BASE_URL
-})
 
 let following = db.get('following')
 
 
 export const stk = {
     async init() {
-        
-        
+                
         // await this.getFollowing()
         await this.seedUser() // This is here until better message searching can be achieved
         this.getMessages()
@@ -75,18 +71,24 @@ export const stk = {
     async getMessages(){
         
         const users = following.value()
-        let response = null
+
         for(let i in users)
         {
             try {
                 const msgParams = users[i].messages.length ? 
                     { since: users[i].latestMsgId } : 
                     {}
-                response = await stkAPI.get('streams/user/' + users[i].id + '.json',
+                const response = await stkAPI.get('streams/user/' + users[i].id + '.json',
                     {
                         params: msgParams
                     })
-                this.pruneMessages(users[i].id, response.data.messages)
+                if(response && response.data && response.data.messages)
+                {
+                    if(this.pruneMessages(users[i].id, response.data.messages))
+                    {
+                        alp.newMsgs(users[i].id, users[i].latestMsgId)
+                    }
+                }
             } catch (error) {
                 console.log(error)
             }
@@ -96,6 +98,7 @@ export const stk = {
         const user = following.find({id: userID})
         const alertIndex = _.findIndex(alerts, {id: userID})
         const buyAlert = alertIndex >= 0 ? alerts[alertIndex].alert : alerts[0].alert
+        let newAlerts = false
         for(let i in msgs)
         {
             if(
@@ -104,6 +107,7 @@ export const stk = {
                 && user.get('messages').find({id: msgs[i].id}).value() == undefined
             )
             {
+                newAlerts = true
                 following.find({id: userID})
                     .get('messages')
                     .push({
@@ -114,5 +118,6 @@ export const stk = {
                     }).write()
             }
         }
+        return newAlerts
     }
 }
