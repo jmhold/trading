@@ -3,7 +3,38 @@
     {
       "id": 1702156,
       "name": "mrinvestorpro",
-      "messages": []
+      "messages": [
+        {
+          "id": 191188459,
+          "body": "$SXTC adding again yes please while this is temporarily under a buck. Big short squeeze beginning that can send this parabolic. Volume just hit a million folks that’s not just a few Stocktwits people buying that’s major volume preceding a major upside move😍🤑🤑🚨 look at that 52wk high this can gap up big👇🏼",
+          "symbols": [
+            {
+              "id": 15093,
+              "symbol": "SXTC",
+              "title": "China SXT Pharmaceuticals Inc",
+              "aliases": [],
+              "is_following": false,
+              "watchlist_count": 2211
+            }
+          ],
+          "created": "2020-01-21T16:03:17Z"
+        },
+        {
+          "id": 191160763,
+          "body": "$ALT buying alt around or under 2.05 excellent entry here. Lower float bios with vaccine related products are hot with China mystery illness in the news. Volume already climbing this could break out fast. Also big hedge funds extremely bullish on the security. Can be a big gainer if you can get a good entry before it blasts off. 2.05 and under best entry but with big momentum this could see much more then that",
+          "symbols": [
+            {
+              "id": 8253,
+              "symbol": "ALT",
+              "title": "Altimmune, Inc. ",
+              "aliases": [],
+              "is_following": false,
+              "watchlist_count": 11799
+            }
+          ],
+          "created": "2020-01-21T14:18:48Z"
+        }
+      ]
     }
   ]
 }
