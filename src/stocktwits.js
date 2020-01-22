@@ -12,7 +12,7 @@ let following = db.get('following')
 
 export const stk = {
     async init() {
-                
+        console.log('StockTwits Init')      
         // await this.getFollowing()
         await this.seedUser() // This is here until better message searching can be achieved
         this.getMessages()
@@ -20,7 +20,7 @@ export const stk = {
         
     },
     async seedUser() { // This is here until better message searching can be achieved
-
+        console.log('Seed User')
         try {
             const response = await stkAPI.get('streams/user/' + 1702156 + '.json')
             const user = response.data.user
@@ -69,12 +69,12 @@ export const stk = {
         }
     },
     async getMessages(){
-        
         const users = following.value()
-
+        
         for(let i in users)
         {
             try {
+                console.log('Getting new messages from StockTwits for: ' + users[i].name)
                 const msgParams = users[i].messages.length ? 
                     { since: users[i].latestMsgId } : 
                     {}
@@ -99,6 +99,7 @@ export const stk = {
         const alertIndex = _.findIndex(alerts, {id: userID})
         const buyAlert = alertIndex >= 0 ? alerts[alertIndex].alert : alerts[0].alert
         let newAlerts = false
+        console.log('Running Prune Messages')
         for(let i in msgs)
         {
             if(

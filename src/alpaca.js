@@ -13,8 +13,8 @@ const maxDollarBuy = 100
  export const alp = {
    openOrders: null,
    async init() {
-     this.openOrders = await alpaca.getOrders({status: 'open'})
-     console.log(this.openOrders)
+     console.log('Alpaca Init')
+    //  this.openOrders = await alpaca.getOrders({status: 'open'})
    },
    async newOrder(sym) {
     if(await alpaca.getAccount().cash < maxDollarBuy) return
@@ -24,6 +24,7 @@ const maxDollarBuy = 100
     websocket.subscribe(channel)
     websocket.onStockTrades(async data => {
       const qty = Math.floor(maxDollarBuy/data.p, 0)
+      console.log('New Order For: ' + sym + ': ' + qty + 'shares at ' + data.p + ' per share')
       await alpaca.createOrder({
            symbol: sym,
            qty,
@@ -38,7 +39,7 @@ const maxDollarBuy = 100
     const user = following.find({id: userID})
     const msgs = user.get('messages').find((o) => o.id > since).value()
     const postitions = await alpaca.getPositions()
-    
+    console.log('Parsing new messages for: ' + user.value().username)
     if(postitions.legth){
       for(let i in msgs)
       {
