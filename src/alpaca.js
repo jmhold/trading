@@ -39,7 +39,7 @@ const maxDollarBuy = 100
     const user = following.find({id: userID})
     const msgs = user.get('messages').find((o) => o.id > since).value()
     const postitions = await alpaca.getPositions()
-    console.log('Parsing new messages for: ' + user.value().username)
+    console.log('Parsing new messages for: ' + user.value().name)
     if(postitions.legth){
       for(let i in msgs)
       {

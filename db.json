@@ -1,0 +1,56 @@
+{
+  "following": [
+    {
+      "id": 1702156,
+      "name": "mrinvestorpro",
+      "messages": [
+        {
+          "id": 191417951,
+          "body": "$IBIO buying here China outbreak just beginning folks this and alt will move up creating big gains for those buying heavy now",
+          "symbols": [
+            {
+              "id": 9491,
+              "symbol": "IBIO",
+              "title": "iBio, Inc.",
+              "aliases": [],
+              "is_following": false,
+              "watchlist_count": 20677
+            }
+          ],
+          "created": "2020-01-22T19:13:01Z"
+        },
+        {
+          "id": 191402947,
+          "body": "$SFET buying more here at this gift dip. Big move near term coming here. Action few days ago was just a preview",
+          "symbols": [
+            {
+              "id": 15040,
+              "symbol": "SFET",
+              "title": "Safe-T Group Ltd. American Depositary Share",
+              "aliases": [],
+              "is_following": false,
+              "watchlist_count": 3003
+            }
+          ],
+          "created": "2020-01-22T17:59:53Z"
+        },
+        {
+          "id": 191400114,
+          "body": "$SPPI adding here. Comically cheap price on manipulation. 20-30% gain from here on technical bounce alone. Much much more when news comes",
+          "symbols": [
+            {
+              "id": 3628,
+              "symbol": "SPPI",
+              "title": "Spectrum Pharmaceuticals, Inc.",
+              "aliases": [],
+              "is_following": false,
+              "watchlist_count": 4973
+            }
+          ],
+          "created": "2020-01-22T17:46:51Z"
+        }
+      ],
+      "latestMsgId": 0
+    }
+  ]
+}
