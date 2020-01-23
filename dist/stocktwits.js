@@ -93,7 +93,7 @@ const stk = {
 
         if (response && response.data && response.data.messages) {
           if (this.pruneMessages(users[i].id, response.data.messages)) {
-            _alpaca.alp.newMsgs(users[i].id, users[i].latestMsgId);
+            _alpaca.alp.newMsgs(users[i].id);
           }
         }
       } catch (error) {

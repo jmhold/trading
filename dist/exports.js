@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.alpaca = exports.alpAPI = exports.stkAPI = exports.STKTWTS_API_ACCESS_TOKEN = exports.db = void 0;
+exports.plyAPI = exports.alpaca = exports.alpAPI = exports.APCA_API_KEY = exports.stkAPI = exports.STKTWTS_API_ACCESS_TOKEN = exports.db = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -16,7 +16,7 @@ const low = require('lowdb');
 
 const FileSync = require('lowdb/adapters/FileSync');
 
-const adapter = new FileSync('db.json');
+const adapter = new FileSync('./dist/db.json');
 const db = low(adapter);
 exports.db = db;
 db.defaults({
@@ -36,6 +36,7 @@ const stkAPI = _axios.default.create({
 exports.stkAPI = stkAPI;
 const APCA_API_BASE_URL = 'https://paper-api.alpaca.markets/v2/';
 const APCA_API_KEY = 'PKOJ3SKL2S0C8U13OXUH';
+exports.APCA_API_KEY = APCA_API_KEY;
 const APCA_API_SECRET = 'HWpjGn5fsfisnNCeZbl3Q/ycFO7oDce7MLW1akjG';
 
 const alpAPI = _axios.default.create({
@@ -53,5 +54,13 @@ const alpaca = new _alpacaTradeApi.default({
   keyId: APCA_API_KEY,
   secretKey: APCA_API_SECRET,
   paper: PAPER
-});
+}); // Polygon API
+
 exports.alpaca = alpaca;
+const PLY_API_BASE_URL = 'https://api.polygon.io/';
+
+const plyAPI = _axios.default.create({
+  baseURL: PLY_API_BASE_URL
+});
+
+exports.plyAPI = plyAPI;

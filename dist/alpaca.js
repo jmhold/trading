@@ -26,44 +26,58 @@ const alp = {
   async newOrder(sym) {
     if ((await _exports.alpaca.getAccount().cash) < maxDollarBuy) return;
     const self = this;
-    const channel = 'T.' + sym;
-    websocket.connect();
-    websocket.subscribe(channel);
-    websocket.onStockTrades(async function (data) {
-      const qty = Math.floor(maxDollarBuy / data.p, 0);
-      console.log('New Order For: ' + sym + ': ' + qty + 'shares at ' + data.p + ' per share');
+    const channel = 'T.' + sym; // websocket.connect()
+    // websocket.subscribe(channel)
+    // websocket.onStockTrades(async data => {
+    // const qty = Math.floor(maxDollarBuy/data.p, 0)
+
+    try {
+      const lastTrade = await _exports.plyAPI.get('v1/last/stocks/' + sym, {
+        params: {
+          apiKey: _exports.APCA_API_KEY
+        }
+      });
+      const price = lastTrade.data.last.price;
+      const qty = Math.floor(maxDollarBuy / price, 0);
+      console.log('New Order For: ' + sym + ': ' + qty + ' shares at ' + price + ' per share');
       await _exports.alpaca.createOrder({
         symbol: sym,
-        qty,
+        qty: qty,
         side: 'buy',
         type: 'market',
         time_in_force: 'ioc'
       }); // TODO: for extended hours must be limit order with TIF 'day'
+    } catch (error) {
+      console.log(error);
+    } //   self.closeSubscription(channel)
+    // })
 
-      self.closeSubscription(channel);
-    });
   },
 
-  async newMsgs(userID, since) {
+  async newMsgs(userID) {
     const user = following.find({
       id: userID
     });
-    const msgs = user.get('messages').find(function (o) {
-      return o.id > since;
+    const latestMsgId = user.value().latestMsgId;
+    const msgs = user.get('messages').filter(function (o) {
+      return o.id > latestMsgId;
     }).value();
     const postitions = await _exports.alpaca.getPositions();
-    console.log('Parsing new messages for: ' + user.value().username);
+    console.log('Parsing new messages for: ' + user.value().name);
 
-    if (postitions.legth) {
-      for (let i in msgs) {
-        const sym = msgs[i].symbols;
+    for (let i in msgs) {
+      const symbols = msgs[i].symbols;
 
-        for (let j in sym) {
-          if (!(_lodash.default.findIndex(postitions, {
-            symbol: sym
-          }) > 0)) {
-            this.newOrder(sym);
-          }
+      if (msgs[i].id > user.value().latestMsgId) {
+        user.set('latestMsgId', msgs[i].id).write();
+      }
+
+      for (let j in symbols) {
+        if (!(_lodash.default.findIndex(postitions, {
+          symbol: symbols[j].symbol
+        }) > 0)) {
+          console.log('Symbol: ' + symbols[j].symbol);
+          this.newOrder(symbols[j].symbol);
         }
       }
     }

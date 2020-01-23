@@ -86,7 +86,7 @@ export const stk = {
                 {
                     if(this.pruneMessages(users[i].id, response.data.messages))
                     {
-                        alp.newMsgs(users[i].id, users[i].latestMsgId)
+                        alp.newMsgs(users[i].id)
                     }
                 }
             } catch (error) {
