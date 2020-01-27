@@ -1,19 +1,19 @@
 "use strict";
 
-var _exports = require("./exports");
+var _stocktwits = _interopRequireDefault(require("./stocktwits"));
 
-var _stocktwits = require("./stocktwits");
+var _alpaca = _interopRequireDefault(require("./alpaca"));
 
-var _alpaca = require("./alpaca");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 console.log('starting trade app');
 
-_stocktwits.stk.init();
+_stocktwits.default.init();
 
-_alpaca.alp.init();
+_alpaca.default.init();
 
 const appLoop = function appLoop() {
-  _stocktwits.stk.getMessages();
+  _stocktwits.default.getMessages();
 };
 
 setInterval(appLoop, 60000);

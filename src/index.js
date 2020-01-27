@@ -1,14 +1,14 @@
-import {alpAPI} from './exports'
-import { stk } from './stocktwits'
-import { alp } from './alpaca'
+import stocktwits from './stocktwits'
+import alpaca from './alpaca'
 
 console.log('starting trade app')
-stk.init()
-alp.init()
+stocktwits.init()
+alpaca.init()
 
-const appLoop = () => {
-                    stk.getMessages()
-                }
+const appLoop = 
+    () => {
+        stocktwits.getMessages()
+    }
 
 setInterval(appLoop, 60000)
 

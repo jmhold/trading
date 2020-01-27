@@ -6,39 +6,50 @@ export const db = low(adapter)
 db.defaults({ following: [] }).write()
 
 
-// API Connections
-import axios from 'axios'
 
-// StockTwits
-const STKTWTS_API_BASE_URL = 'https://api.stocktwits.com/api/2/'
-export const STKTWTS_API_ACCESS_TOKEN = '1fe2f9e9b8b0e2dfc94bcb8fdcf3479f24d9474a'
-export const stkAPI = axios.create({
-    baseURL: STKTWTS_API_BASE_URL
-})
+// Mongo DB
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = "mongodb+srv://jmhold:<password>@jh-algo-alpaca-92lf7.mongodb.net/test?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });
 
-// Alpaca API
-const APCA_API_BASE_URL= 'https://paper-api.alpaca.markets/v2/'
-export const APCA_API_KEY = 'PKOJ3SKL2S0C8U13OXUH'
-const APCA_API_SECRET = 'HWpjGn5fsfisnNCeZbl3Q/ycFO7oDce7MLW1akjG'
-export const alpAPI = axios.create({
-    baseURL: APCA_API_BASE_URL,
-    headers: {
-        "APCA-API-KEY-ID": APCA_API_KEY,
-        "APCA-API-SECRET-KEY": APCA_API_SECRET
+// Mongoose
+const mongoose = require('mongoose')
+mongoose.connect(
+    'mongodb+srv://jmhold:' + 
+    // process.env.MONGO_ATLAS_PW +
+    "vxfivQ2onkqbOM1h" +
+    '@jh-algo-alpaca-92lf7.mongodb.net/test?retryWrites=true&w=majority', 
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+
+// Utils
+
+export const utils = {
+    handleErrors(error) {
+        if (error.response) {
+            /*
+             * The request was made and the server responded with a
+             * status code that falls out of the range of 2xx
+             */
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        } else if (error.request) {
+            /*
+             * The request was made but no response was received, `error.request`
+             * is an instance of XMLHttpRequest in the browser and an instance
+             * of http.ClientRequest in Node.js
+             */
+            console.log(error.request);
+        } else {
+            // Something happened in setting up the request and triggered an Error
+            console.log('Error', error.message);
+        }
     }
-})
-
-// Alpaca SDK
-import Alpaca from '@alpacahq/alpaca-trade-api'
-const PAPER = true
-export const alpaca = new Alpaca({
-    keyId: APCA_API_KEY, 
-    secretKey: APCA_API_SECRET, 
-    paper: PAPER
-  })
-
-// Polygon API
-const PLY_API_BASE_URL = 'https://api.polygon.io/'
-export const plyAPI = axios.create({
-    baseURL: PLY_API_BASE_URL
-})
+}

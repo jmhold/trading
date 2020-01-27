@@ -1,49 +1,61 @@
 import _ from 'lodash'
 import {
-    db,
-    stkAPI,
-    STKTWTS_API_ACCESS_TOKEN
+    STKTWTS_API_ACCESS_TOKEN,
+    utils
 } from './exports'
-import {alp} from './alpaca'
+import User from './models/users.model'
+import Msg from './models/messages.model'
+import StkTwts from './lib/stocktwits.api'
+import alpaca from './alpaca'
 import {alerts} from './lib/alerts'
 
-let following = db.get('following')
-
-
-export const stk = {
+export default {
     async init() {
         console.log('StockTwits Init')      
         // await this.getFollowing()
         await this.seedUser() // This is here until better message searching can be achieved
         this.getMessages()
-        following.write();
+        // following.write();
         
     },
     async seedUser() { // This is here until better message searching can be achieved
         console.log('Seed User')
         try {
-            const response = await stkAPI.get('streams/user/' + 1702156 + '.json')
+            const response = await StkTwts.get('streams/user/' + 1702156 + '.json')
             const user = response.data.user
+            // console.log(user)
+            let existingUser = null
+            await User
+                    .findOne(
+                        {id: user.id},
+                        (err, doc) => {
+                            // console.log(doc)
+                            existingUser = doc
+                        }).exec()
             
-            if(!following.find({id: user.id}).value())
+            if(!existingUser)
             {
-                following.push(
-                    {
-                        id: user.id,
-                        name: user.username,
-                        messages: [],
-                        latestMsgId: 0
-                    }
-                ).write()
+                const newUser = new User({
+                    id: user.id,
+                    name: user.username,
+                    messages: [],
+                    latestMsgId: 0
+                })
+                try {
+                    console.log('Saving')
+                    newUser.save()
+                } catch (error) {
+                    console.log(error)
+                }
             }
         } catch (error) {
-            console.log(error)
+            utils.handleErrors(error)
         }
     },
     async getFollowing() {
         let response = null;
         try {
-            response = await stkAPI.get(
+            response = await StkTwts.get(
                 'graph/following.json',
                 {
                     params: {
@@ -51,7 +63,7 @@ export const stk = {
                     }
                 })
         } catch (error) {
-            console.log(error)
+            utils.handleErrors(error)
         }
 
         let followedUsers = response.data.users
@@ -69,56 +81,77 @@ export const stk = {
         }
     },
     async getMessages(){
-        const users = following.value()
-        
+        const users = 
+            await User
+                    .find(
+                        {},
+                        (err, doc) => {
+                            return doc
+                            // console.log(doc)
+                            // existingUser = doc
+                        }).exec()
+        // console.log(users)
         for(let i in users)
         {
+            // console.log(users[i])
+            // console.log(users[i].latestMsgId)
+            console.log('Getting new messages from StockTwits for: ' + users[i].name)
+            const msgParams = users[i].messages.length > 0 ? 
+                { since: users[i].latestMsgId } : 
+                {}
             try {
-                console.log('Getting new messages from StockTwits for: ' + users[i].name)
-                const msgParams = users[i].messages.length ? 
-                    { since: users[i].latestMsgId } : 
-                    {}
-                const response = await stkAPI.get('streams/user/' + users[i].id + '.json',
+                const response = await StkTwts.get('streams/user/' + users[i].id + '.json',
                     {
                         params: msgParams
                     })
                 if(response && response.data && response.data.messages)
                 {
-                    if(this.pruneMessages(users[i].id, response.data.messages))
-                    {
-                        alp.newMsgs(users[i].id)
-                    }
+                    this.pruneMessages(users[i].id, response.data.messages)
                 }
             } catch (error) {
-                console.log(error)
+                utils.handleErrors(error)
             }
         }
     },
-    pruneMessages(userID, msgs) {
-        const user = following.find({id: userID})
+    async pruneMessages(userID, msgs) {
+        
+        const userDoc = await User.findOne({id: userID}, (err, doc) => doc).exec()
+        if(!userDoc) {
+            console.log('Prune Msgs couldn\'t find user id: ' + userId)
+            return
+        }
+        const msgDocs = userDoc.messages
         const alertIndex = _.findIndex(alerts, {id: userID})
         const buyAlert = alertIndex >= 0 ? alerts[alertIndex].alert : alerts[0].alert
         let newAlerts = false
         console.log('Running Prune Messages')
         for(let i in msgs)
         {
+            const msgDoc = _.findIndex(msgDocs, {id: msgs[i].id})
+            // await msgDocs.findOne({id: msgs[i].id}, (err, doc) => doc).exec()
             if(
                 msgs[i].body.match(buyAlert) 
                 && msgs[i].symbols 
-                && user.get('messages').find({id: msgs[i].id}).value() == undefined
+                && !msgDoc >= 0
             )
             {
                 newAlerts = true
-                following.find({id: userID})
-                    .get('messages')
-                    .push({
-                        id: msgs[i].id,
-                        body: msgs[i].body,
-                        symbols: msgs[i].symbols,
-                        created: msgs[i].created_at
-                    }).write()
+                console.log("Adding Msg:")
+                console.log(msgs[i].body)
+
+                msgDocs.push(new Msg({
+                    id: msgs[i].id,
+                    body: msgs[i].body,
+                    symbols: msgs[i].symbols,
+                    created: msgs[i].created_at
+                }))
+                userDoc.latestMsgId = 
+                    msgs[i].id > userDoc.latestMsgId ? 
+                    msgs[i].id : userDoc.latestMsgId
+                alpaca.newMsgSymbols(userDoc.name, msgs[i].symbols)
             }
         }
+        await userDoc.save()
         return newAlerts
     }
 }

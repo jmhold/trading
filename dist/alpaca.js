@@ -3,28 +3,31 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.alp = void 0;
+exports.default = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
+
+var _alpaca = _interopRequireDefault(require("./lib/alpaca.sdk"));
+
+var _polygon = _interopRequireDefault(require("./lib/polygon.api"));
+
+var _alpaca2 = require("./lib/alpaca.vars");
 
 var _exports = require("./exports");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-let websocket = _exports.alpaca.websocket;
-
-let following = _exports.db.get('following');
-
+let websocket = _alpaca.default.websocket;
 const maxDollarBuy = 100;
-const alp = {
+var _default = {
   openOrders: null,
 
   async init() {
-    console.log('Alpaca Init'); //  this.openOrders = await alpaca.getOrders({status: 'open'})
+    console.log('Alpaca Init'); //  this.openOrders = await Alpaca.getOrders({status: 'open'})
   },
 
   async newOrder(sym) {
-    if ((await _exports.alpaca.getAccount().cash) < maxDollarBuy) return;
+    if ((await _alpaca.default.getAccount().cash) < maxDollarBuy) return;
     const self = this;
     const channel = 'T.' + sym; // websocket.connect()
     // websocket.subscribe(channel)
@@ -32,15 +35,15 @@ const alp = {
     // const qty = Math.floor(maxDollarBuy/data.p, 0)
 
     try {
-      const lastTrade = await _exports.plyAPI.get('v1/last/stocks/' + sym, {
+      const lastTrade = await _polygon.default.get('v1/last/stocks/' + sym, {
         params: {
-          apiKey: _exports.APCA_API_KEY
+          apiKey: _alpaca2.APCA_API_KEY
         }
       });
       const price = lastTrade.data.last.price;
       const qty = Math.floor(maxDollarBuy / price, 0);
       console.log('New Order For: ' + sym + ': ' + qty + ' shares at ' + price + ' per share');
-      await _exports.alpaca.createOrder({
+      await _alpaca.default.createOrder({
         symbol: sym,
         qty: qty,
         side: 'buy',
@@ -48,37 +51,22 @@ const alp = {
         time_in_force: 'ioc'
       }); // TODO: for extended hours must be limit order with TIF 'day'
     } catch (error) {
-      console.log(error);
+      _exports.utils.handleErrors(error);
     } //   self.closeSubscription(channel)
     // })
 
   },
 
-  async newMsgs(userID) {
-    const user = following.find({
-      id: userID
-    });
-    const latestMsgId = user.value().latestMsgId;
-    const msgs = user.get('messages').filter(function (o) {
-      return o.id > latestMsgId;
-    }).value();
-    const postitions = await _exports.alpaca.getPositions();
-    console.log('Parsing new messages for: ' + user.value().name);
+  async newMsgSymbols(name, symbols) {
+    const postitions = await _alpaca.default.getPositions();
+    console.log('Parsing new messages for: ' + name);
 
-    for (let i in msgs) {
-      const symbols = msgs[i].symbols;
-
-      if (msgs[i].id > user.value().latestMsgId) {
-        user.set('latestMsgId', msgs[i].id).write();
-      }
-
-      for (let j in symbols) {
-        if (!(_lodash.default.findIndex(postitions, {
-          symbol: symbols[j].symbol
-        }) > 0)) {
-          console.log('Symbol: ' + symbols[j].symbol);
-          this.newOrder(symbols[j].symbol);
-        }
+    for (let j in symbols) {
+      if (!(_lodash.default.findIndex(postitions, {
+        symbol: symbols[j].symbol
+      }) > 0)) {
+        console.log('Symbol: ' + symbols[j].symbol);
+        this.newOrder(symbols[j].symbol);
       }
     }
   },
@@ -88,4 +76,4 @@ const alp = {
   }
 
 };
-exports.alp = alp;
+exports.default = _default;

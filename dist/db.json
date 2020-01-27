@@ -1,26 +1,3 @@
 {
-  "following": [
-    {
-      "id": 1702156,
-      "name": "mrinvestorpro",
-      "messages": [
-        {
-          "id": 191441371,
-          "body": "$BLIN adding/buying here again this is a major bargain",
-          "symbols": [
-            {
-              "id": 8563,
-              "symbol": "BLIN",
-              "title": "Bridgeline Digital, Inc",
-              "aliases": [],
-              "is_following": false,
-              "watchlist_count": 9241
-            }
-          ],
-          "created": "2020-01-22T20:53:38Z"
-        }
-      ],
-      "latestMsgId": 191441371
-    }
-  ]
+  "following": []
 }

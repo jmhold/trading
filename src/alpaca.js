@@ -1,25 +1,24 @@
 import _ from 'lodash'
+import Alpaca from './lib/alpaca.sdk'
+import Polygon from './lib/polygon.api'
+import { APCA_API_KEY } from './lib/alpaca.vars' 
 import {
   db,
-  alpaca,
-  APCA_API_KEY,
-  plyAPI
+  utils
 } from './exports'
 
-let websocket = alpaca.websocket
-
-let following = db.get('following')
+let websocket = Alpaca.websocket
 
 const maxDollarBuy = 100
 
- export const alp = {
+ export default {
    openOrders: null,
    async init() {
      console.log('Alpaca Init')
-    //  this.openOrders = await alpaca.getOrders({status: 'open'})
+    //  this.openOrders = await Alpaca.getOrders({status: 'open'})
    },
    async newOrder(sym) {
-    if(await alpaca.getAccount().cash < maxDollarBuy) return
+    if(await Alpaca.getAccount().cash < maxDollarBuy) return
     const self = this
     const channel = 'T.' + sym
     // websocket.connect()
@@ -28,7 +27,7 @@ const maxDollarBuy = 100
       // const qty = Math.floor(maxDollarBuy/data.p, 0)
       try {
         const lastTrade = await 
-        plyAPI.get('v1/last/stocks/' + sym,
+        Polygon.get('v1/last/stocks/' + sym,
         {
           params: {
             apiKey: APCA_API_KEY
@@ -37,7 +36,7 @@ const maxDollarBuy = 100
         const price = lastTrade.data.last.price
         const qty = Math.floor(maxDollarBuy/price, 0)
         console.log('New Order For: ' + sym + ': ' + qty + ' shares at ' + price + ' per share')
-        await alpaca.createOrder({
+        await Alpaca.createOrder({
              symbol: sym,
              qty: qty,
              side: 'buy',
@@ -45,24 +44,15 @@ const maxDollarBuy = 100
              time_in_force: 'ioc'
            }) // TODO: for extended hours must be limit order with TIF 'day'
       } catch (error) {
-        console.log(error)
+        utils.handleErrors(error)
       }
     //   self.closeSubscription(channel)
     // })
    },
-   async newMsgs(userID) {
-    const user = following.find({id: userID})
-    const latestMsgId = user.value().latestMsgId;
-    const msgs = user.get('messages').filter((o) => o.id > latestMsgId).value()
-    const postitions = await alpaca.getPositions()
-    console.log('Parsing new messages for: ' + user.value().name)
-    for(let i in msgs)
-    {
-      const symbols = msgs[i].symbols
-      if(msgs[i].id > user.value().latestMsgId)
-      {
-        user.set('latestMsgId', msgs[i].id).write()
-      }
+   async newMsgSymbols(name, symbols) {
+    const postitions = await Alpaca.getPositions()
+    console.log('Parsing new messages for: ' + name)
+      
       for(let j in symbols)
       {
         if(!(_.findIndex(postitions, {symbol: symbols[j].symbol}) > 0))
@@ -71,7 +61,6 @@ const maxDollarBuy = 100
           this.newOrder(symbols[j].symbol)
         }
       }
-    }
    },
    closeSubscription(channel) {
      websocket.unsubscribe(channel)

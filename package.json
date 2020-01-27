@@ -14,14 +14,16 @@
     "@alpacahq/alpaca-trade-api": "^1.2.7",
     "axios": "^0.19.1",
     "lodash": "^4.17.15",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "mongoose": "^5.8.9"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-modern-browsers": "^14.1.1",
-    "babel-polyfill": "^6.26.0"
+    "nodemon": "^2.0.2"
   }
 }
