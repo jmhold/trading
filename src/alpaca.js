@@ -36,13 +36,15 @@ const maxDollarBuy = 100
         const price = lastTrade.data.last.price
         const qty = Math.floor(maxDollarBuy/price, 0)
         console.log('New Order For: ' + sym + ': ' + qty + ' shares at ' + price + ' per share')
-        await Alpaca.createOrder({
+        const alpCreateOrder = await Alpaca.createOrder({
              symbol: sym,
              qty: qty,
              side: 'buy',
              type: 'market',
-             time_in_force: 'ioc'
+             time_in_force: 'day'
            }) // TODO: for extended hours must be limit order with TIF 'day'
+        console.log('After createOrder call')
+        console.log(alpCreateOrder)
       } catch (error) {
         utils.handleErrors(error)
       }
