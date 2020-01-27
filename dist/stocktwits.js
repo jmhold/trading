@@ -66,34 +66,33 @@ var _default = {
     }
   },
 
-  async getFollowing() {
-    let response = null;
-
-    try {
-      response = await _stocktwits.default.get('graph/following.json', {
-        params: {
-          access_token: _exports.STKTWTS_API_ACCESS_TOKEN
-        }
-      });
-    } catch (error) {
-      _exports.utils.handleErrors(error);
-    }
-
-    let followedUsers = response.data.users;
-
-    for (let i in followedUsers) {
-      if (!following.find({
-        id: followedUsers[i].id
-      }).value()) {
-        following.push({
-          id: followedUsers[i].id,
-          name: followedUsers[i].username,
-          messages: []
-        }).write();
-      }
-    }
-  },
-
+  // async getFollowing() { TODO: Needs refactoring
+  //     let response = null;
+  //     try {
+  //         response = await StkTwts.get(
+  //             'graph/following.json',
+  //             {
+  //                 params: {
+  //                     access_token: STKTWTS_API_ACCESS_TOKEN
+  //                 }
+  //             })
+  //     } catch (error) {
+  //         utils.handleErrors(error)
+  //     }
+  //     let followedUsers = response.data.users
+  //     for(let i in followedUsers)
+  //     {
+  //         if(!following.find({id: followedUsers[i].id}).value())
+  //         {
+  //             following.push(
+  //                 {
+  //                     id: followedUsers[i].id,
+  //                     name: followedUsers[i].username,
+  //                     messages: []
+  //                 }).write()
+  //         }
+  //     }
+  // },
   async getMessages() {
     const users = await _users.default.find({}, function (err, doc) {
       return doc; // console.log(doc)
@@ -104,6 +103,7 @@ var _default = {
       // console.log(users[i])
       // console.log(users[i].latestMsgId)
       console.log('Getting new messages from StockTwits for: ' + users[i].name);
+      console.log('latestMsgId: ' + users[i].latestMsgId);
       const msgParams = users[i].messages.length > 0 ? {
         since: users[i].latestMsgId
       } : {};
@@ -114,6 +114,7 @@ var _default = {
         });
 
         if (response && response.data && response.data.messages) {
+          // console.log(response.data.messages)
           this.pruneMessages(users[i].id, response.data.messages);
         }
       } catch (error) {
@@ -147,7 +148,12 @@ var _default = {
     for (let i in msgs) {
       const msgDoc = _lodash.default.findIndex(msgDocs, {
         id: msgs[i].id
-      }); // await msgDocs.findOne({id: msgs[i].id}, (err, doc) => doc).exec()
+      }); // console.log('*****MSG BODY*****')
+      // console.log(msgs[i].body)
+      // console.log('*****RGEX MATCH*****')
+      // console.log(msgs[i].body.match(buyAlert) )
+      // console.log("Find existing doc: " + msgDoc)
+      // await msgDocs.findOne({id: msgs[i].id}, (err, doc) => doc).exec()
 
 
       if (msgs[i].body.match(buyAlert) && msgs[i].symbols && !msgDoc >= 0) {
@@ -167,7 +173,6 @@ var _default = {
     }
 
     await userDoc.save();
-    return newAlerts;
   }
 
 };
