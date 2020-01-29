@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import Alpaca from './lib/alpaca.sdk'
-import Polygon from './lib/polygon.api'
-import { APCA_API_KEY } from './lib/alpaca.vars' 
+import Alpaca from '../lib/alpaca.sdk'
+import Polygon from '../lib/polygon.api'
+import { APCA_API_KEY } from '../lib/alpaca.vars' 
 import {
   db,
   utils
-} from './exports'
+} from '../lib/exports'
 
 let websocket = Alpaca.websocket
 

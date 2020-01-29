@@ -2,12 +2,12 @@ import _ from 'lodash'
 import {
     STKTWTS_API_ACCESS_TOKEN,
     utils
-} from './exports'
-import User from './models/users.model'
-import Msg from './models/messages.model'
-import StkTwts from './lib/stocktwits.api'
+} from '../lib/exports'
+import User from '../models/users.model'
+import Msg from '../models/messages.model'
+import StkTwts from '../lib/stocktwits.api'
 import alpaca from './alpaca'
-import {alerts} from './lib/alerts'
+import {alerts} from '../lib/alerts'
 
 export default {
     async init() {

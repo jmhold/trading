@@ -2,11 +2,11 @@ import Mongoose from 'mongoose'
 
 export const msgSchema = Mongoose.Schema({
     id: Number,
-    nabodyme: String,
+    body: String,
     symbols: [String],
     created: Date
 })
 
-let msgsModel = Mongoose.model('msg', msgSchema)
+let msgsModel = Mongoose.model('Message', msgSchema)
 
 export default msgsModel 

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import StkTwts from '../../lib/stocktwits.api'
 import {alerts} from '../../lib/alerts'
-import {utils} from '../../exports'
+import {utils} from '../../lib/exports'
 
 // Create a date object 3 months in the past
 let btDate = new Date()
@@ -18,9 +18,10 @@ const backtest = {
 
     },
     async getMsgs() {
-        const msgParams = (messages.length && trackLowestID) ? 
-                    { max: trackLowestID } : 
-                    {}
+        const msgParams = {max:192052807}
+        // const msgParams = (messages.length && trackLowestID) ? 
+        //             { max: trackLowestID } : 
+        //             {}
         callCounter++
         try {
             const response = await StkTwts.get('streams/user/' + userID + '.json',
@@ -29,6 +30,15 @@ const backtest = {
                 })
             if(response && response.data && response.data.messages)
             {
+                // let msgs = response.data.messages;
+                // console.log(response.data.messages)
+                // console.log(alerts)
+                // console.log(_.findIndex(alerts, {id: userID}))
+                // console.log(alerts[1].alert)
+                // for(let i in msgs)
+                // {
+                //     console.log(msgs[i].body.match(alerts[1].alert))
+                // }
                 this.pruneNewMessages(userID, response.data.messages)
             }
         } catch (error) {
@@ -39,13 +49,14 @@ const backtest = {
     
         const alertIndex = _.findIndex(alerts, {id: userID})
         const buyAlert = alertIndex >= 0 ? alerts[alertIndex].alert : alerts[0].alert
+
         console.log('Running Prune Messages')
         for(let i in msgs)
         {
-
             if(msgs[i].body.match(buyAlert) && msgs[i].symbols)
             {
-                console.log('prune for loop')
+                console.log('inside ifs')
+                console.log(msgs[i].body.match(buyAlert))
                 messages.push({
                     id: msgs[i].id,
                     body: msgs[i].body,
@@ -54,6 +65,7 @@ const backtest = {
                 })
             }
         }
+        console.log(messages)
         this.lowestID()
     },
     lowestID() {

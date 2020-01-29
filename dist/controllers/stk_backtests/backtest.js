@@ -6,7 +6,7 @@ var _stocktwits = _interopRequireDefault(require("../../lib/stocktwits.api"));
 
 var _alerts = require("../../lib/alerts");
 
-var _exports = require("../../exports");
+var _exports = require("../../lib/exports");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22,9 +22,12 @@ const backtest = {
   init() {},
 
   async getMsgs() {
-    const msgParams = messages.length && trackLowestID ? {
-      max: trackLowestID
-    } : {};
+    const msgParams = {
+      max: 192052807
+    }; // const msgParams = (messages.length && trackLowestID) ? 
+    //             { max: trackLowestID } : 
+    //             {}
+
     callCounter++;
 
     try {
@@ -33,6 +36,15 @@ const backtest = {
       });
 
       if (response && response.data && response.data.messages) {
+        // let msgs = response.data.messages;
+        // console.log(response.data.messages)
+        // console.log(alerts)
+        // console.log(_.findIndex(alerts, {id: userID}))
+        // console.log(alerts[1].alert)
+        // for(let i in msgs)
+        // {
+        //     console.log(msgs[i].body.match(alerts[1].alert))
+        // }
         this.pruneNewMessages(userID, response.data.messages);
       }
     } catch (error) {
@@ -50,7 +62,8 @@ const backtest = {
 
     for (let i in msgs) {
       if (msgs[i].body.match(buyAlert) && msgs[i].symbols) {
-        console.log('prune for loop');
+        console.log('inside ifs');
+        console.log(msgs[i].body.match(buyAlert));
         messages.push({
           id: msgs[i].id,
           body: msgs[i].body,
@@ -60,6 +73,7 @@ const backtest = {
       }
     }
 
+    console.log(messages);
     this.lowestID();
   },
 

@@ -3,22 +3,23 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.msgSchema = void 0;
+exports.default = exports.posSchema = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const msgSchema = _mongoose.default.Schema({
-  id: Number,
-  body: String,
-  symbols: [String],
+const posSchema = _mongoose.default.Schema({
+  asset_id: String,
+  symbol: String,
+  side: String,
+  // long or short
   created: Date
 });
 
-exports.msgSchema = msgSchema;
+exports.posSchema = posSchema;
 
-let msgsModel = _mongoose.default.model('Message', msgSchema);
+let posModel = _mongoose.default.model('Position', posSchema);
 
-var _default = msgsModel;
+var _default = posModel;
 exports.default = _default;
