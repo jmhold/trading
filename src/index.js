@@ -11,5 +11,3 @@ const appLoop =
     }
 
 setInterval(appLoop, 60000)
-
-
