@@ -19,6 +19,8 @@ db.defaults({ following: [] }).write()
 
 // Mongoose
 const mongoose = require('mongoose')
+if(process.env.NODE_ENV === 'prod')
+{
 mongoose.connect(
     'mongodb+srv://jmhold:' + 
     // process.env.MONGO_ATLAS_PW +
@@ -28,6 +30,17 @@ mongoose.connect(
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
+} else {
+    mongoose.connect(
+        'mongodb+srv://jmhold:' + 
+        // process.env.MONGO_ATLAS_PW +
+        "vxfivQ2onkqbOM1h" +
+        '@jh-algo-alpaca-92lf7.mongodb.net/test?retryWrites=true&w=majority', 
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+}
 
 // Utils
 

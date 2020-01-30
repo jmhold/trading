@@ -1,0 +1,355 @@
+{
+    "response": {
+        "status": 200
+    },
+    "user": {
+        "id": 1702156,
+        "username": "mrinvestorpro",
+        "name": "88888888",
+        "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+        "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+        "join_date": "2018-11-08",
+        "official": false,
+        "identity": "User",
+        "classification": [],
+        "followers": 11133,
+        "following": 43,
+        "ideas": 38371,
+        "watchlist_stocks_count": 251,
+        "like_count": 58,
+        "plus_tier": "",
+        "premium_room": "",
+        "trade_app": false
+    },
+    "cursor": {
+        "more": true,
+        "since": 192484634,
+        "max": 192454980
+    },
+    "messages": [
+        {
+            "id": 192478142,
+            "body": "$SXTC buying more/adding here around and under a buck. World health organization meeting tomorrow and I ms say volume will be coming here tomorrow and people will be chasing at 1.10/1.15 etc. This has had many potential breakouts recently but it’s big one is coming. I’d rather have an average around a buck when it’s pushing 1.38-1.45 then chase it. Have a good night all.",
+            "created_at": "2020-01-29T23:09:27Z",
+            "user": {
+                "id": 1702156,
+                "username": "mrinvestorpro",
+                "name": "88888888",
+                "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "join_date": "2018-11-08",
+                "official": false,
+                "identity": "User",
+                "classification": [],
+                "followers": 11124,
+                "following": 43,
+                "ideas": 38357,
+                "watchlist_stocks_count": 251,
+                "like_count": 58,
+                "plus_tier": "",
+                "premium_room": "",
+                "trade_app": false
+            },
+            "source": {
+                "id": 1149,
+                "title": "StockTwits for iOS",
+                "url": "http://www.stocktwits.com/mobile"
+            },
+            "symbols": [
+                {
+                    "id": 15093,
+                    "symbol": "SXTC",
+                    "title": "China SXT Pharmaceuticals Inc",
+                    "aliases": [],
+                    "is_following": false,
+                    "watchlist_count": 3531
+                }
+            ],
+            "conversation": {
+                "parent_message_id": 192478142,
+                "in_reply_to_message_id": null,
+                "parent": true,
+                "replies": 1
+            },
+            "likes": {
+                "total": 12,
+                "user_ids": [
+                    3000622,
+                    1064306,
+                    2908643,
+                    3016637,
+                    1005872,
+                    2071149,
+                    2239134,
+                    2149674,
+                    1622284,
+                    1458137,
+                    2864996,
+                    2226475
+                ]
+            },
+            "mentioned_users": [],
+            "entities": {
+                "sentiment": null
+            },
+            "filters": {
+                "day_counts": 145,
+                "official_api": true
+            }
+        },
+        {
+            "id": 192420507,
+            "body": "$ARTW I’m holding this for 2.50 minimum here. This one is signalling strong showing something big coming and insiders just bought over 40,000 shares. Anything in this area is profitable for 30-70% gains",
+            "created_at": "2020-01-29T19:15:45Z",
+            "user": {
+                "id": 1702156,
+                "username": "mrinvestorpro",
+                "name": "88888888",
+                "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "join_date": "2018-11-08",
+                "official": false,
+                "identity": "User",
+                "classification": [],
+                "followers": 11112,
+                "following": 43,
+                "ideas": 38313,
+                "watchlist_stocks_count": 251,
+                "like_count": 58,
+                "plus_tier": "",
+                "premium_room": "",
+                "trade_app": false
+            },
+            "source": {
+                "id": 1149,
+                "title": "StockTwits for iOS",
+                "url": "http://www.stocktwits.com/mobile"
+            },
+            "symbols": [
+                {
+                    "id": 928,
+                    "symbol": "ARTW",
+                    "title": "Art's-Way Manufacturing Co. Inc.",
+                    "aliases": [],
+                    "is_following": false,
+                    "watchlist_count": 734
+                }
+            ],
+            "conversation": {
+                "parent_message_id": 192420507,
+                "in_reply_to_message_id": null,
+                "parent": true,
+                "replies": 0
+            },
+            "likes": {
+                "total": 2,
+                "user_ids": [
+                    2112468,
+                    1981955
+                ]
+            },
+            "mentioned_users": [],
+            "entities": {
+                "sentiment": null
+            },
+            "filters": {
+                "day_counts": 140,
+                "official_api": true
+            }
+        },
+        {
+            "id": 192419708,
+            "body": "$ARTW massive buy alert🚨. Big mover signalling upside jump coming. Big insider buys recently, low float and sitting at 52 wk low with big upside and a $7 per share analyst price target. This company benefits greatly from phase 1 and the signal showing big move coming. U can miss this if u penny pinch the bid as it moves fast. A market buy is best here to catch the best price best entry is sub 2.10 that’s how cheap this is so any buy up to that area will make u money on a run to 2.50-3.15",
+            "created_at": "2020-01-29T19:12:19Z",
+            "user": {
+                "id": 1702156,
+                "username": "mrinvestorpro",
+                "name": "88888888",
+                "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "join_date": "2018-11-08",
+                "official": false,
+                "identity": "User",
+                "classification": [],
+                "followers": 11114,
+                "following": 43,
+                "ideas": 38342,
+                "watchlist_stocks_count": 251,
+                "like_count": 58,
+                "plus_tier": "",
+                "premium_room": "",
+                "trade_app": false
+            },
+            "source": {
+                "id": 1149,
+                "title": "StockTwits for iOS",
+                "url": "http://www.stocktwits.com/mobile"
+            },
+            "symbols": [
+                {
+                    "id": 928,
+                    "symbol": "ARTW",
+                    "title": "Art's-Way Manufacturing Co. Inc.",
+                    "aliases": [],
+                    "is_following": false,
+                    "watchlist_count": 816
+                }
+            ],
+            "conversation": {
+                "parent_message_id": 192419708,
+                "in_reply_to_message_id": null,
+                "parent": true,
+                "replies": 6
+            },
+            "likes": {
+                "total": 7,
+                "user_ids": [
+                    2965835,
+                    1981955,
+                    1905998,
+                    2175364,
+                    3013295,
+                    3016637,
+                    2864996
+                ]
+            },
+            "mentioned_users": [],
+            "entities": {
+                "sentiment": null
+            },
+            "filters": {
+                "day_counts": 139,
+                "official_api": true
+            }
+        },
+        {
+            "id": 192392565,
+            "body": "$SAEX buying more saex here. It’s been fluctuating between 2.65 and 2.95 since the filing other day but hit high 3,s less then a week ago on new contracts now totalling around 200 million. Everyone is very clear on this company’s value here this info is for new people. Market cap 11 million so let me think about it🤔uh yes il buy everything I can on dips. Deadline to announce compliance with sec is early feb but don’t expect them to wait till last minute. I spoke directly with investor relations and they assured me they expect to meet compliance. That is the one and only reason this is under $5 per share right now with all those contracts and low float. Shorts are still negligent eating their crayons and playing Nintendo in grandmas basement unaware they are about to serve as jet fuel on this violent explosion upward any hour any day. This is a near term investment.I’m buying everything I can",
+            "created_at": "2020-01-29T17:01:10Z",
+            "user": {
+                "id": 1702156,
+                "username": "mrinvestorpro",
+                "name": "88888888",
+                "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "join_date": "2018-11-08",
+                "official": false,
+                "identity": "User",
+                "classification": [],
+                "followers": 11112,
+                "following": 43,
+                "ideas": 38328,
+                "watchlist_stocks_count": 251,
+                "like_count": 58,
+                "plus_tier": "",
+                "premium_room": "",
+                "trade_app": false
+            },
+            "source": {
+                "id": 1149,
+                "title": "StockTwits for iOS",
+                "url": "http://www.stocktwits.com/mobile"
+            },
+            "symbols": [
+                {
+                    "id": 11821,
+                    "symbol": "SAEX",
+                    "title": "SAExploration Holdings, Inc.",
+                    "aliases": [],
+                    "is_following": false,
+                    "watchlist_count": 15006
+                }
+            ],
+            "conversation": {
+                "parent_message_id": 192392565,
+                "in_reply_to_message_id": null,
+                "parent": true,
+                "replies": 9
+            },
+            "likes": {
+                "total": 17,
+                "user_ids": [
+                    2015955,
+                    2259682,
+                    3024943,
+                    560955,
+                    1993112,
+                    1656028,
+                    499740,
+                    2864996,
+                    2095306,
+                    2120821,
+                    2985731,
+                    993625,
+                    2063043,
+                    1681927,
+                    2133828,
+                    1931841,
+                    2979209
+                ]
+            },
+            "mentioned_users": [],
+            "entities": {
+                "sentiment": null
+            },
+            "filters": {
+                "day_counts": 132,
+                "official_api": true
+            }
+        },{
+            "id": 192384152,
+            "body": "$CTRM remember this was 3.75 pushing 4 and red hot as everyone rushed it. Low price because it’s been forgotten about as shipping season was delayed. This is the cheapest it’s been in a long time you’d be buying 70% cheaper then most just a heads up I seriously wouldn’t sleep on this under 2 at all",
+            "created_at": "2020-01-29T16:22:33Z",
+            "user": {
+                "id": 1702156,
+                "username": "mrinvestorpro",
+                "name": "88888888",
+                "avatar_url": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "avatar_url_ssl": "https://avatars.stocktwits.com/production/1702156/thumb-1576710991.png",
+                "join_date": "2018-11-08",
+                "official": false,
+                "identity": "User",
+                "classification": [],
+                "followers": 11091,
+                "following": 43,
+                "ideas": 38275,
+                "watchlist_stocks_count": 251,
+                "like_count": 58,
+                "plus_tier": "",
+                "premium_room": "",
+                "trade_app": false
+            },
+            "source": {
+                "id": 1149,
+                "title": "StockTwits for iOS",
+                "url": "http://www.stocktwits.com/mobile"
+            },
+            "symbols": [
+                {
+                    "id": 15161,
+                    "symbol": "CTRM",
+                    "title": "CASTOR MARITIME/SH SH",
+                    "aliases": [],
+                    "is_following": false,
+                    "watchlist_count": 4623
+                }
+            ],
+            "likes": {
+                "total": 3,
+                "user_ids": [
+                    1183335,
+                    806744,
+                    1937465
+                ]
+            },
+            "mentioned_users": [],
+            "entities": {
+                "sentiment": null
+            },
+            "filters": {
+                "day_counts": 127,
+                "official_api": true
+            }
+        }
+    ]
+}

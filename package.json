@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "babel src -d dist",
+<<<<<<< HEAD
     "start": "env NODE_ENV=dev && npm run build && node dist/index.js",
     "prod": "env NODE_ENV=prod && npm run build && node dist/index.js",
+=======
+    "start": "npm run build && node dist/index.js",
+>>>>>>> 80baedb92ceaffce244f7011db3638cbdc3ef869
     "heroku": "node dist/index.js",
     "backtest": "npm run build && node dist/controllers/stk_backtests/backtest.js"
   },
