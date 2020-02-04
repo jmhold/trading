@@ -55,7 +55,6 @@ var _default = {
         });
 
         try {
-          console.log('Saving');
           newUser.save();
         } catch (error) {
           console.log(error);
@@ -95,8 +94,7 @@ var _default = {
   // },
   async getMessages() {
     const users = await _users.default.find({}, function (err, doc) {
-      return doc; // console.log(doc)
-      // existingUser = doc
+      return doc;
     }).exec(); // console.log(users)
 
     for (let i in users) {
@@ -166,10 +164,11 @@ var _default = {
           symbols: msgs[i].symbols,
           created: msgs[i].created_at
         }));
-        userDoc.latestMsgId = msgs[i].id > userDoc.latestMsgId ? msgs[i].id : userDoc.latestMsgId;
 
         _alpaca.default.newMsgSymbols(userDoc.name, msgs[i].symbols);
       }
+
+      userDoc.latestMsgId = msgs[i].id > userDoc.latestMsgId ? msgs[i].id : userDoc.latestMsgId;
     }
 
     await userDoc.save();

@@ -3,7 +3,7 @@ import Mongoose from 'mongoose'
 export const msgSchema = Mongoose.Schema({
     id: Number,
     body: String,
-    symbols: [String],
+    symbols: [],
     created: Date
 })
 

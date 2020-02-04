@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Alpaca from '../lib/alpaca.sdk'
 import Polygon from '../lib/polygon.api'
+import Position from '../models/positions.model'
 import { APCA_API_KEY } from '../lib/alpaca.vars' 
 import {
   db,
@@ -11,13 +12,16 @@ let websocket = Alpaca.websocket
 
 const maxDollarBuy = 100
 
- export default {
-   openOrders: null,
-   async init() {
+export default {
+  openOrders: null,
+  positions: null,
+  async init() {
      console.log('Alpaca Init')
+     console.log('Get Positions Init')
+     this.getPositions()
     //  this.openOrders = await Alpaca.getOrders({status: 'open'})
-   },
-   async newOrder(sym) {
+  },
+  async newOrder(sym) {
     if(await Alpaca.getAccount().cash < maxDollarBuy) return
     const self = this
     const channel = 'T.' + sym
@@ -50,21 +54,103 @@ const maxDollarBuy = 100
       }
     //   self.closeSubscription(channel)
     // })
-   },
-   async newMsgSymbols(name, symbols) {
-    const postitions = await Alpaca.getPositions()
+  },
+  async newMsgSymbols(name, symbols) {
+    this.positions = await Alpaca.getPositions()
     console.log('Parsing new messages for: ' + name)
       
       for(let j in symbols)
       {
-        if(!(_.findIndex(postitions, {symbol: symbols[j].symbol}) > 0))
+        if(!(_.findIndex(this.positions, {symbol: symbols[j].symbol}) > 0))
         {
           console.log('Symbol: ' + symbols[j].symbol)
           this.newOrder(symbols[j].symbol)
         }
       }
-   },
-   closeSubscription(channel) {
+  },
+  async getPositions() {
+    console.log('Get Positions')
+    this.positions = await Alpaca.getPositions()
+    this.updatePositions()
+  },
+  async updatePositions() {
+    if(!this.positions) return
+    for(let i in this.positions)
+    {
+      const entry = this.positions[i].avg_entry_price
+      const current = this.positions[i].current_price
+      const plpc = Math.round(current/entry * 100) / 100
+      let pos = null
+      let risk = 0.2
+      try {
+        pos = await Position
+          .findOne(
+            {symbol: this.positions[i].symbol},
+            (err, doc) => {
+              if(err) { console.log(err); return }
+              return doc
+            }).exec()
+      } catch (error) {
+        console.log(error)
+      }
+      if(!pos) {
+        pos = new Position({
+          symbol: this.positions[i].symbol,
+          max_price: current > entry ? current : entry,
+          max_plpc: plpc > 1 ? plpc : 1,
+          created: new Date()
+        })
+      } else {
+        pos.max_price = pos.max_price > current ? pos.max_price : current
+        pos.max_plpc = pos.max_plpc > plpc ? pos.max_plpc : plpc
+      }
+      try {
+        pos.save()
+      } catch (error) {
+        console.log(error)
+      }
+
+      if(pos.max_plpc > plpc)
+      {
+        if(pos.max_plpc >= 1.25)
+        {
+          risk = 0.18
+        } else if(pos.max_plpc >= 1.5)
+        {
+          risk = 0.15
+        } else if(pos.max_plpc >= 1.75)
+        {
+          risk = 0.13
+        } else if(pos.max_plpc >= 2)
+        {
+          risk = 0.10
+        } else if(pos.max_plpc >= 3)
+        {
+          risk = 0.08
+        } else if(pos.max_plpc >= 4)
+        {
+          risk = 0.05
+        } else if(pos.max_plpc >= 5)
+        {
+          risk = 0.03
+        }
+        if((pos.max_plpc - plpc) > risk){
+          this.liquidatePosition(this.positions[i])
+        }
+      }
+
+    }
+  },
+  async liquidatePosition(pos) {
+    await Alpaca.createOrder({
+      symbol: pos.symbol,
+      qty: qty,
+      side: 'sell',
+      type: 'market',
+      time_in_force: 'day'
+    })
+  },
+  closeSubscription(channel) {
      websocket.unsubscribe(channel)
-   }
+  }
  }

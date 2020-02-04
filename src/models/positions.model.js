@@ -1,9 +1,9 @@
 import Mongoose from 'mongoose'
 
 export const posSchema = Mongoose.Schema({
-    asset_id: String,
     symbol: String,
-    side: String, // long or short
+    max_price: Number,
+    max_plpc: Number,
     created: Date
 })
 

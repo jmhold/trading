@@ -1,8 +1,8 @@
 "use strict";
 
-var _stocktwits = _interopRequireDefault(require("./stocktwits"));
+var _stocktwits = _interopRequireDefault(require("./controllers/stocktwits"));
 
-var _alpaca = _interopRequireDefault(require("./alpaca"));
+var _alpaca = _interopRequireDefault(require("./controllers/alpaca"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14,6 +14,8 @@ _alpaca.default.init();
 
 const appLoop = function appLoop() {
   _stocktwits.default.getMessages();
+
+  _alpaca.default.getPositions();
 };
 
 setInterval(appLoop, 60000);

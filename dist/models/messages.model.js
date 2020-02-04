@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const msgSchema = _mongoose.default.Schema({
   id: Number,
   body: String,
-  symbols: [String],
+  symbols: [],
   created: Date
 });
 

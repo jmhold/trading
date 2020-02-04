@@ -42,7 +42,6 @@ export default {
                     latestMsgId: 0
                 })
                 try {
-                    console.log('Saving')
                     newUser.save()
                 } catch (error) {
                     console.log(error)
@@ -83,13 +82,11 @@ export default {
     async getMessages(){
         const users = 
             await User
-                    .find(
-                        {},
-                        (err, doc) => {
-                            return doc
-                            // console.log(doc)
-                            // existingUser = doc
-                        }).exec()
+                .find(
+                    {},
+                    (err, doc) => {
+                        return doc
+                    }).exec()
         // console.log(users)
         for(let i in users)
         {
@@ -152,11 +149,11 @@ export default {
                     symbols: msgs[i].symbols,
                     created: msgs[i].created_at
                 }))
-                userDoc.latestMsgId = 
-                    msgs[i].id > userDoc.latestMsgId ? 
-                    msgs[i].id : userDoc.latestMsgId
                 alpaca.newMsgSymbols(userDoc.name, msgs[i].symbols)
             }
+            userDoc.latestMsgId = 
+                msgs[i].id > userDoc.latestMsgId ? 
+                msgs[i].id : userDoc.latestMsgId
         }
         await userDoc.save()
     }
