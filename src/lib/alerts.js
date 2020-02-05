@@ -6,7 +6,7 @@ export const alerts = [
     },
     {
         id: 1702156,
-        alert: /^\$[A-Z]{2,4}.*(([B,b]uying|[A,a]dding|[O,o]pening|[H,h]olding) {1,6}([H,h]ere|[M,m]ore))|(([B,b]uy|[A,a]dd) [A,a]lert)/g,
+        alert: /^\$[A-Z]{2,4}.*(([B,b]uying|[A,a]dding|[O,o]pening|[H,h]olding) .{1,5} ([H,h]ere|[M,m]ore))|(([B,b]uy|[A,a]dd) [A,a]lert)/g,
         maybe: /(sleep on this)/g        
     }
 ]
