@@ -81,15 +81,14 @@ export default {
       const current = this.positions[i].current_price
       const plpc = Math.round(current/entry * 100) / 100
       let pos = null
-      let risk = 0.2
       try {
         pos = await Position
-          .findOne(
-            {symbol: this.positions[i].symbol},
-            (err, doc) => {
-              if(err) { console.log(err); return }
-              return doc
-            }).exec()
+        .findOne(
+          {symbol: this.positions[i].symbol},
+          (err, doc) => {
+            if(err) { console.log(err); return }
+            return doc
+          }).exec()
       } catch (error) {
         console.log(error)
       }
@@ -109,36 +108,36 @@ export default {
       } catch (error) {
         console.log(error)
       }
-
+        
+      let risk = 0.25
       if(pos.max_plpc > plpc)
       {
-        if(pos.max_plpc >= 1.25)
+        if(pos.max_plpc >= 5)
         {
-          risk = 0.18
-        } else if(pos.max_plpc >= 1.5)
-        {
-          risk = 0.15
-        } else if(pos.max_plpc >= 1.75)
-        {
-          risk = 0.13
-        } else if(pos.max_plpc >= 2)
-        {
-          risk = 0.10
-        } else if(pos.max_plpc >= 3)
-        {
-          risk = 0.08
+          risk = 0.03
         } else if(pos.max_plpc >= 4)
         {
           risk = 0.05
-        } else if(pos.max_plpc >= 5)
+        } else if(pos.max_plpc >= 3)
         {
-          risk = 0.03
+          risk = 0.08
+        } else if(pos.max_plpc >= 2)
+        {
+          risk = 0.10
+        } else if(pos.max_plpc >= 1.75)
+        {
+          risk = 0.13
+        } else if(pos.max_plpc >= 1.5)
+        {
+          risk = 0.15
+        } else if(pos.max_plpc >= 1.25)
+        {
+          risk = 0.18
         }
         if((pos.max_plpc - plpc) > risk){
           this.liquidatePosition(this.positions[i])
         }
       }
-
     }
   },
   async liquidatePosition(pos) {
