@@ -143,7 +143,7 @@ export default {
   async liquidatePosition(pos) {
     await Alpaca.createOrder({
       symbol: pos.symbol,
-      qty: qty,
+      qty: pos.qty,
       side: 'sell',
       type: 'market',
       time_in_force: 'day'
