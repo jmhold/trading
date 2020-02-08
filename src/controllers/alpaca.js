@@ -10,7 +10,7 @@ import {
 
 let websocket = Alpaca.websocket
 
-const maxDollarBuy = 100
+const maxDollarBuy = 10
 
 export default {
   openOrders: null,
@@ -109,9 +109,11 @@ export default {
         console.log(error)
       }
         
-      let risk = 0.25
-      if(pos.max_plpc > plpc)
+      let risk = 0
+      if(pos.max_plpc >= 1.25)
       {
+        risk = 0.03
+        /* For Later
         if(pos.max_plpc >= 5)
         {
           risk = 0.03
@@ -130,13 +132,13 @@ export default {
         } else if(pos.max_plpc >= 1.5)
         {
           risk = 0.15
-        } else if(pos.max_plpc >= 1.25)
-        {
+        } else {
           risk = 0.18
-        }
-        if((pos.max_plpc - plpc) > risk){
-          this.liquidatePosition(this.positions[i])
-        }
+       } */
+      }
+      if(plpc < .75 || (risk && (pos.max_plpc - plpc) > risk))
+      {
+        this.liquidatePosition(this.positions[i])
       }
     }
   },
