@@ -83,18 +83,23 @@ var _default = {
   async prunePositions() {
     let storedPositions = await _positions.default.find({
       active: true
-    });
+    }); // console.log("storedPositions")
+    // console.log(storedPositions)
 
     for (let i in storedPositions) {
+      // console.log(_.findIndex(this.positions, { symbol: storedPositions[i].symbol}))
       if (_lodash.default.findIndex(this.positions, {
         symbol: storedPositions[i].symbol
       }) === -1) {
         try {
-          _positions.default.updateOne({
+          let doc = await _positions.default.findOneAndUpdate({
             symbol: storedPositions[i].symbol
           }, {
             active: false
+          }, {
+            new: true
           });
+          console.log(`THE NEW ACTIVE VLAUE IS: ${doc.active}`);
         } catch (error) {
           console.log(error);
         }
@@ -165,12 +170,28 @@ var _default = {
       }
 
       if (plpc < .70 || risk && pos.max_plpc - plpc > risk) {
+        console.log('**********************');
+        console.log('LIQUIDATE');
+        console.log('**********************');
+        console.log(`SYMBOL             ${this.positions[i].symbol}`);
+        console.log(`RISK               ${risk}`);
+        console.log(`THIS PNL PERCENT   ${plpc}`);
+        console.log(`THIS PNL COND      ${plpc < .70}`);
+        console.log(`MAX PNL PERCENT    ${pos.max_plpc}`);
+        console.log(`MAX - PNL PERCENT  ${pos.max_plpc - plpc}`);
+        console.log(`MAX COND           ${risk && pos.max_plpc - plpc > risk}`);
         this.liquidatePosition(this.positions[i]);
       }
     }
   },
 
   async liquidatePosition(pos) {
+    _positions.default.updateOne({
+      symbol: pos.symbol
+    }, {
+      active: false
+    });
+
     await _alpaca.default.createOrder({
       symbol: pos.symbol,
       qty: pos.qty,

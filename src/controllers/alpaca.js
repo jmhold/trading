@@ -67,12 +67,18 @@ export default {
     this.updatePositions()
   },
   async prunePositions() {
-    let storedPositions = await Position.find({active:true})
+    let storedPositions = await Position.find({ active:true })
+    // console.log("storedPositions")
+    // console.log(storedPositions)
     for(let i in storedPositions)
     {
+      // console.log(_.findIndex(this.positions, { symbol: storedPositions[i].symbol}))
       if(_.findIndex(this.positions, { symbol: storedPositions[i].symbol}) === -1) {
         try {
-          Position.updateOne({ symbol: storedPositions[i].symbol}, { active: false })
+          let doc = await Position.findOne({ symbol: storedPositions[i].symbol})
+          doc.active = false
+          doc.save = false
+          console.log(`THE NEW ACTIVE VLAUE IS: ${doc.active}`)
         } catch (error) {
           console.log(error)
         }
@@ -157,6 +163,7 @@ export default {
     }
   },
   async liquidatePosition(pos) {
+    Position.updateOne({ symbol: pos.symbol }, { active: false })
     await Alpaca.createOrder({
       symbol: pos.symbol,
       qty: pos.qty,
