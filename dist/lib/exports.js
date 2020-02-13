@@ -3,19 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.utils = exports.db = void 0;
+exports.utils = void 0;
 
 // LowDB
 const low = require('lowdb');
 
-const FileSync = require('lowdb/adapters/FileSync');
-
-const adapter = new FileSync('./dist/db.json');
-const db = low(adapter);
-exports.db = db;
-db.defaults({
-  following: []
-}).write(); // Mongo DB
+const FileSync = require('lowdb/adapters/FileSync'); // const adapter = new FileSync('./dist/db.json')
+// export const db = low(adapter)
+// db.defaults({ following: [] }).write()
+// Mongo DB
 // const MongoClient = require('mongodb').MongoClient;
 // const uri = "mongodb+srv://jmhold:<password>@jh-algo-alpaca-92lf7.mongodb.net/test?retryWrites=true&w=majority";
 // const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -25,6 +21,7 @@ db.defaults({
 //   client.close();
 // });
 // Mongoose
+
 
 const mongoose = require('mongoose');
 

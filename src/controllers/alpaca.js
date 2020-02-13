@@ -4,9 +4,9 @@ import Polygon from '../lib/polygon.api'
 import Position from '../models/positions.model'
 import { APCA_API_KEY } from '../lib/alpaca.vars' 
 import {
-  db,
   utils
 } from '../lib/exports'
+import { LONG_HOLDS } from './strategies/variable'
 
 let websocket = Alpaca.websocket
 
@@ -17,7 +17,6 @@ export default {
   positions: null,
   async init() {
      console.log('Alpaca Init')
-     console.log('Get Positions Init')
      this.getPositions()
     //  this.openOrders = await Alpaca.getOrders({status: 'open'})
   },
@@ -47,8 +46,6 @@ export default {
              type: 'market',
              time_in_force: 'day'
            }) // TODO: for extended hours must be limit order with TIF 'day'
-        console.log('After createOrder call')
-        console.log(alpCreateOrder)
       } catch (error) {
         utils.handleErrors(error)
       }
@@ -56,25 +53,35 @@ export default {
     // })
   },
   async newMsgSymbols(name, symbols) {
-    this.positions = await Alpaca.getPositions()
-    console.log('Parsing new messages for: ' + name)
-      
-      for(let j in symbols)
+    this.positions = await Alpaca.getPositions()  
+    for(let j in symbols)
+    {
+      if(!(_.findIndex(this.positions, {symbol: symbols[j].symbol}) > 0))
       {
-        if(!(_.findIndex(this.positions, {symbol: symbols[j].symbol}) > 0))
-        {
-          console.log('Symbol: ' + symbols[j].symbol)
-          this.newOrder(symbols[j].symbol)
-        }
+        this.newOrder(symbols[j].symbol)
       }
+    }
   },
   async getPositions() {
-    console.log('Get Positions')
     this.positions = await Alpaca.getPositions()
     this.updatePositions()
   },
+  async prunePositions() {
+    let storedPositions = await Position.find({active:true})
+    for(let i in storedPositions)
+    {
+      if(_.findIndex(this.positions, { symbol: storedPositions[i].symbol}) === -1) {
+        try {
+          Position.updateOne({ symbol: storedPositions[i].symbol}, { active: false })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  },
   async updatePositions() {
     if(!this.positions) return
+    this.prunePositions()
     for(let i in this.positions)
     {
       const entry = this.positions[i].avg_entry_price
@@ -84,7 +91,10 @@ export default {
       try {
         pos = await Position
         .findOne(
-          {symbol: this.positions[i].symbol},
+          {
+            active: true,
+            symbol: this.positions[i].symbol
+          },
           (err, doc) => {
             if(err) { console.log(err); return }
             return doc
@@ -94,6 +104,7 @@ export default {
       }
       if(!pos) {
         pos = new Position({
+          active: true,
           symbol: this.positions[i].symbol,
           max_price: current > entry ? current : entry,
           max_plpc: plpc > 1 ? plpc : 1,
@@ -108,35 +119,28 @@ export default {
       } catch (error) {
         console.log(error)
       }
+      if(_.findIndex(LONG_HOLDS, this.positions[i].symbol) != -1) return
         
       let risk = 0
-      if(pos.max_plpc >= 1.25)
+      if(pos.max_plpc >= 1.1)
       {
-        risk = 0.03
-        /* For Later
-        if(pos.max_plpc >= 5)
+        if(pos.max_plpc >= 4)
         {
-          risk = 0.03
-        } else if(pos.max_plpc >= 4)
-        {
-          risk = 0.05
-        } else if(pos.max_plpc >= 3)
-        {
-          risk = 0.08
+          risk = 1
         } else if(pos.max_plpc >= 2)
         {
-          risk = 0.10
-        } else if(pos.max_plpc >= 1.75)
-        {
-          risk = 0.13
+          risk = 0.5
         } else if(pos.max_plpc >= 1.5)
+        {
+          risk = 0.25
+        } else if(pos.max_plpc >= 1.25)
         {
           risk = 0.15
         } else {
-          risk = 0.18
-       } */
+          risk = 0.10
+        }
       }
-      if(plpc < .75 || (risk && (pos.max_plpc - plpc) > risk))
+      if(plpc < .70 || (risk && (pos.max_plpc - plpc) > risk))
       {
         this.liquidatePosition(this.positions[i])
       }

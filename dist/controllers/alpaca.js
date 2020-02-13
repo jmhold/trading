@@ -17,10 +17,12 @@ var _alpaca2 = require("../lib/alpaca.vars");
 
 var _exports = require("../lib/exports");
 
+var _variable = require("./strategies/variable");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let websocket = _alpaca.default.websocket;
-const maxDollarBuy = 100;
+const maxDollarBuy = 10;
 var _default = {
   openOrders: null,
   positions: null,
@@ -85,18 +87,41 @@ var _default = {
     this.updatePositions();
   },
 
+  async prunePositions() {
+    let storedPositions = await _positions.default.find({
+      active: true
+    });
+
+    for (let i in storedPositions) {
+      if (_lodash.default.findIndex(this.positions, {
+        symbol: storedPositions[i].symbol
+      }) === -1) {
+        try {
+          _positions.default.updateOne({
+            symbol: storedPositions[i].symbol
+          }, {
+            active: false
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  },
+
   async updatePositions() {
     if (!this.positions) return;
+    this.prunePositions();
 
     for (let i in this.positions) {
       const entry = this.positions[i].avg_entry_price;
       const current = this.positions[i].current_price;
       const plpc = Math.round(current / entry * 100) / 100;
       let pos = null;
-      let risk = 0.2;
 
       try {
         pos = await _positions.default.findOne({
+          active: true,
           symbol: this.positions[i].symbol
         }, function (err, doc) {
           if (err) {
@@ -112,6 +137,7 @@ var _default = {
 
       if (!pos) {
         pos = new _positions.default({
+          active: true,
           symbol: this.positions[i].symbol,
           max_price: current > entry ? current : entry,
           max_plpc: plpc > 1 ? plpc : 1,
@@ -128,26 +154,25 @@ var _default = {
         console.log(error);
       }
 
-      if (pos.max_plpc > plpc) {
-        if (pos.max_plpc >= 1.25) {
-          risk = 0.18;
-        } else if (pos.max_plpc >= 1.5) {
-          risk = 0.15;
-        } else if (pos.max_plpc >= 1.75) {
-          risk = 0.13;
-        } else if (pos.max_plpc >= 2) {
-          risk = 0.10;
-        } else if (pos.max_plpc >= 3) {
-          risk = 0.08;
-        } else if (pos.max_plpc >= 4) {
-          risk = 0.05;
-        } else if (pos.max_plpc >= 5) {
-          risk = 0.03;
-        }
+      if (_lodash.default.findIndex(_variable.LONG_HOLDS, this.positions[i].symbol) != -1) return;
+      let risk = 0;
 
-        if (pos.max_plpc - plpc > risk) {
-          this.liquidatePosition(this.positions[i]);
+      if (pos.max_plpc >= 1.1) {
+        if (pos.max_plpc >= 4) {
+          risk = 1;
+        } else if (pos.max_plpc >= 2) {
+          risk = 0.5;
+        } else if (pos.max_plpc >= 1.5) {
+          risk = 0.25;
+        } else if (pos.max_plpc >= 1.25) {
+          risk = 0.15;
+        } else {
+          risk = 0.10;
         }
+      }
+
+      if (plpc < .70 || risk && pos.max_plpc - plpc > risk) {
+        this.liquidatePosition(this.positions[i]);
       }
     }
   },
@@ -155,7 +180,7 @@ var _default = {
   async liquidatePosition(pos) {
     await _alpaca.default.createOrder({
       symbol: pos.symbol,
-      qty: qty,
+      qty: pos.qty,
       side: 'sell',
       type: 'market',
       time_in_force: 'day'

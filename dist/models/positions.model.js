@@ -10,6 +10,7 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const posSchema = _mongoose.default.Schema({
+  active: Boolean,
   symbol: String,
   max_price: Number,
   max_plpc: Number,
