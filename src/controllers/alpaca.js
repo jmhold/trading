@@ -142,6 +142,16 @@ export default {
       }
       if(plpc < .70 || (risk && (pos.max_plpc - plpc) > risk))
       {
+        console.log('**********************')
+        console.log('LIQUIDATE')
+        console.log('**********************')
+        console.log(`SYMBOL             ${this.positions[i].symbol}`)
+        console.log(`RISK               ${risk}`)
+        console.log(`THIS PNL PERCENT   ${plpc}`)
+        console.log(`THIS PNL COND      ${plpc < .70}`)
+        console.log(`MAX PNL PERCENT    ${pos.max_plpc}`)
+        console.log(`MAX - PNL PERCENT  ${pos.max_plpc - plpc}`)
+        console.log(`MAX COND           ${risk && (pos.max_plpc - plpc) > risk}`)
         this.liquidatePosition(this.positions[i])
       }
     }
