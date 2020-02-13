@@ -27,22 +27,18 @@ var _default = {
 
     await this.seedUser(); // This is here until better message searching can be achieved
 
-    this.getMessages(); // following.write();
+    this.getMessages();
   },
 
   async seedUser() {
     // This is here until better message searching can be achieved
-    console.log('Seed User');
-
     try {
       const response = await _stocktwits.default.get('streams/user/' + 1702156 + '.json');
-      const user = response.data.user; // console.log(user)
-
+      const user = response.data.user;
       let existingUser = null;
       await _users.default.findOne({
         id: user.id
       }, function (err, doc) {
-        // console.log(doc)
         existingUser = doc;
       }).exec();
 
@@ -95,11 +91,9 @@ var _default = {
   async getMessages() {
     const users = await _users.default.find({}, function (err, doc) {
       return doc;
-    }).exec(); // console.log(users)
+    }).exec();
 
     for (let i in users) {
-      // console.log(users[i])
-      // console.log(users[i].latestMsgId)
       console.log('Getting new messages from StockTwits for: ' + users[i].name);
       console.log('latestMsgId: ' + users[i].latestMsgId);
       const msgParams = users[i].messages.length > 0 ? {
@@ -112,7 +106,6 @@ var _default = {
         });
 
         if (response && response.data && response.data.messages) {
-          // console.log(response.data.messages)
           this.pruneMessages(users[i].id, response.data.messages);
         }
       } catch (error) {
@@ -146,13 +139,7 @@ var _default = {
     for (let i in msgs) {
       const msgDoc = _lodash.default.findIndex(msgDocs, {
         id: msgs[i].id
-      }); // console.log('*****MSG BODY*****')
-      // console.log(msgs[i].body)
-      // console.log('*****RGEX MATCH*****')
-      // console.log(msgs[i].body.match(buyAlert) )
-      // console.log("Find existing doc: " + msgDoc)
-      // await msgDocs.findOne({id: msgs[i].id}, (err, doc) => doc).exec()
-
+      });
 
       if (msgs[i].body.match(buyAlert) && msgs[i].symbols && !msgDoc >= 0) {
         newAlerts = true;

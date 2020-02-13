@@ -29,7 +29,6 @@ var _default = {
 
   async init() {
     console.log('Alpaca Init');
-    console.log('Get Positions Init');
     this.getPositions(); //  this.openOrders = await Alpaca.getOrders({status: 'open'})
   },
 
@@ -57,9 +56,6 @@ var _default = {
         type: 'market',
         time_in_force: 'day'
       }); // TODO: for extended hours must be limit order with TIF 'day'
-
-      console.log('After createOrder call');
-      console.log(alpCreateOrder);
     } catch (error) {
       _exports.utils.handleErrors(error);
     } //   self.closeSubscription(channel)
@@ -69,20 +65,17 @@ var _default = {
 
   async newMsgSymbols(name, symbols) {
     this.positions = await _alpaca.default.getPositions();
-    console.log('Parsing new messages for: ' + name);
 
     for (let j in symbols) {
       if (!(_lodash.default.findIndex(this.positions, {
         symbol: symbols[j].symbol
       }) > 0)) {
-        console.log('Symbol: ' + symbols[j].symbol);
         this.newOrder(symbols[j].symbol);
       }
     }
   },
 
   async getPositions() {
-    console.log('Get Positions');
     this.positions = await _alpaca.default.getPositions();
     this.updatePositions();
   },

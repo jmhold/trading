@@ -11,12 +11,13 @@ var _alpaca = require("./alpaca.vars");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Alpaca SDK
-const PAPER = true;
+console.log(`PROCESS ENV: ${process.env.NODE_ENV}`); // Alpaca SDK
+
+const PAPER = false;
 
 var _default = new _alpacaTradeApi.default({
-  keyId: _alpaca.APCA_API_KEY,
-  secretKey: _alpaca.APCA_API_SECRET,
+  keyId: process.env.NODE_ENV === 'dev' ? _alpaca.PAPER_APCA_API_KEY : APCA_API_KEY,
+  secretKey: process.env.NODE_ENV === 'dev' ? _alpaca.PAPER_APCA_API_SECRET : APCA_API_SECRET,
   paper: PAPER
 });
 
