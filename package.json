@@ -10,7 +10,8 @@
     "forever": "forever start dist/index.js",
     "backtest": "npm run build && node dist/controllers/stk_backtests/backtest.js",
     "build_volume_runner": "rm -rf dist && babel src/controllers/strategies -d dist",
-    "start_volume_runner": "npm run build && node dist/controllers/strategies/volume_runners.js"
+    "start_volume_runner": "npm run build && node dist/controllers/strategies/volume_runners.js",
+    "forever_volume_runner": "npm run build && forever start dist/controllers/strategies/volume_runners.js"
   },
   "babel": {
     "presets": [
