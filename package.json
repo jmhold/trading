@@ -8,13 +8,27 @@
     "start": "npm run build && NODE_ENV=dev forever start dist/index.js",
     "prod": "npm run build && NODE_ENV=prod forever start  dist/index.js",
     "forever": "forever start dist/index.js",
-    "backtest": "npm run build && node dist/controllers/stk_backtests/backtest.js"
+    "backtest": "npm run build && node dist/controllers/stk_backtests/backtest.js",
+    "build_volume_runner": "rm -rf dist && babel src/controllers/strategies -d dist",
+    "start_volume_runner": "npm run build && node dist/controllers/strategies/volume_runners.js"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env"
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties",
+      "@babel/plugin-transform-regenerator"
+    ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@alpacahq/alpaca-trade-api": "^1.2.7",
     "axios": "^0.19.1",
+    "core-js-bundle": "^3.6.4",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
     "mongoose": "^5.8.9"
@@ -23,6 +37,8 @@
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-transform-regenerator": "^7.8.7",
     "@babel/preset-env": "^7.8.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-modern-browsers": "^14.1.1",

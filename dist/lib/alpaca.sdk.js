@@ -3,21 +3,25 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.PaperAlpaca = exports["default"] = void 0;
 
 var _alpacaTradeApi = _interopRequireDefault(require("@alpacahq/alpaca-trade-api"));
 
 var _alpaca = require("./alpaca.vars");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 // Alpaca SDK
-const PAPER = false;
-
-var _default = new _alpacaTradeApi.default({
-  keyId: process.env.NODE_ENV === 'dev' ? _alpaca.PAPER_APCA_API_KEY : _alpaca.APCA_API_KEY,
-  secretKey: process.env.NODE_ENV === 'dev' ? _alpaca.PAPER_APCA_API_SECRET : _alpaca.APCA_API_SECRET,
-  paper: PAPER
+var _default = new _alpacaTradeApi["default"]({
+  keyId: _alpaca.APCA_API_KEY,
+  secretKey: _alpaca.APCA_API_SECRET,
+  paper: false
 });
 
-exports.default = _default;
+exports["default"] = _default;
+var PaperAlpaca = new _alpacaTradeApi["default"]({
+  keyId: _alpaca.PAPER_APCA_API_KEY,
+  secretKey: _alpaca.PAPER_APCA_API_SECRET,
+  paper: true
+});
+exports.PaperAlpaca = PaperAlpaca;

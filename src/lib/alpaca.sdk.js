@@ -7,9 +7,15 @@ import {
 } from './alpaca.vars'
 
 // Alpaca SDK
-const PAPER = false
 export default new Alpaca({
-                    keyId: process.env.NODE_ENV === 'dev' ?  PAPER_APCA_API_KEY : APCA_API_KEY, 
-                    secretKey:  process.env.NODE_ENV === 'dev' ?  PAPER_APCA_API_SECRET : APCA_API_SECRET, 
-                    paper: PAPER
+                    keyId: APCA_API_KEY, 
+                    secretKey:  APCA_API_SECRET, 
+                    paper: false
                 })
+
+export const PaperAlpaca = 
+    new Alpaca({
+            keyId: PAPER_APCA_API_KEY,
+            secretKey:  PAPER_APCA_API_SECRET,
+            paper: true
+        })

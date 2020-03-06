@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.posSchema = void 0;
+exports["default"] = exports.posSchema = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-const posSchema = _mongoose.default.Schema({
+var posSchema = _mongoose["default"].Schema({
   active: Boolean,
   symbol: String,
   max_price: Number,
@@ -19,7 +19,7 @@ const posSchema = _mongoose.default.Schema({
 
 exports.posSchema = posSchema;
 
-let posModel = _mongoose.default.model('Position', posSchema);
+var posModel = _mongoose["default"].model('Position', posSchema);
 
 var _default = posModel;
-exports.default = _default;
+exports["default"] = _default;

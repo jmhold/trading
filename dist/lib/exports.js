@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.utils = void 0;
 
 // LowDB
-const low = require('lowdb');
+var low = require('lowdb');
 
-const FileSync = require('lowdb/adapters/FileSync'); // const adapter = new FileSync('./dist/db.json')
+var FileSync = require('lowdb/adapters/FileSync'); // const adapter = new FileSync('./dist/db.json')
 // export const db = low(adapter)
 // db.defaults({ following: [] }).write()
 // Mongo DB
@@ -23,7 +23,7 @@ const FileSync = require('lowdb/adapters/FileSync'); // const adapter = new File
 // Mongoose
 
 
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
 if (process.env.NODE_ENV === 'prod') {
   mongoose.connect('mongodb+srv://jmhold:' + // process.env.MONGO_ATLAS_PW +
@@ -40,8 +40,8 @@ if (process.env.NODE_ENV === 'prod') {
 } // Utils
 
 
-const utils = {
-  handleErrors(error) {
+var utils = {
+  handleErrors: function handleErrors(error) {
     if (error.response) {
       /*
        * The request was made and the server responded with a
@@ -61,6 +61,5 @@ const utils = {
       console.log('Error', error.message);
     }
   }
-
 };
 exports.utils = utils;
